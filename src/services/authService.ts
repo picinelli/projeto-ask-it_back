@@ -26,7 +26,7 @@ async function signIn(userInfo: User) {
   if (!user) throwError("This account does not exists!", 404);
   
   const isPasswordCorrect = bcrypt.compareSync(password, user.password)
-  if (!isPasswordCorrect) throwError("Email or password incorrect", 400)
+  if (!isPasswordCorrect) throwError("Email or password incorrect", 403)
 
   return jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
 }
