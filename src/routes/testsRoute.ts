@@ -1,10 +1,9 @@
 import { Router } from "express";
-import { getDisciplines, getTestsByDiscipline, getTestsByTeacher } from "../controllers/testsController.js";
+import { getDisciplines, getTests } from "../controllers/testsController.js";
 
 const testsRoute = Router()
 
-testsRoute.get("/tests/discipline", getTestsByDiscipline)
-testsRoute.get("/tests/teacher", getTestsByTeacher)
+testsRoute.get("/tests", getTests)
 testsRoute.get("/disciplines", getDisciplines)
 
 export default testsRoute

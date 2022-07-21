@@ -5,15 +5,17 @@ import { User } from "@prisma/client";
 import { getUserByEmail, insertUser } from "../repositories/authRepository.js";
 import throwError from "../utils/throwError.js";
 import { encryptBcrypt } from "../utils/encrypt.js";
+import { UserInfo } from "../controllers/authController.js";
 
 export interface tokenInfo {
   token: string,
   userId: number
 }
 
-async function signUp(userInfo: User) {
+async function signUp(userInfo: UserInfo) {
   const user = await getUserByEmail(userInfo.email);
   if (user) throwError("This email is already in use", 409);
+  if (userInfo.password !== userInfo.confirm_password) throwError("passwords are not equal", 403);
 
   userInfo = { ...userInfo, password: await encryptBcrypt(userInfo.password) };
 
