@@ -1,2 +1,4 @@
 .env
+.env.test
 /node_modules
+/T5__repoprovas__front-template

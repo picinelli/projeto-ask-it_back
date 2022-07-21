@@ -1,11 +1,20 @@
 import prisma from "../database.js";
 
 async function getTestsByDiscipline() {
+  // return await prisma.discipline.findMany({
+  //   select: {
+
+  //   }
+  // })
+
+//TODO: Alterar Discipline para disciplines?
   return await prisma.term.findMany({
     select: {
+      id: true,
       number: true,
       Discipline: {
         select: {
+          id: true,
           name: true,
           TeacherDiscipline: {
             select: {
@@ -19,9 +28,11 @@ async function getTestsByDiscipline() {
                   id: true,
                   name: true,
                   pdfUrl: true,
+                  createdAt: true,
                   category: {
                     select: {
-                      name: true
+                      id: true,
+                      name: true,
                     }
                   }
                 },
@@ -29,8 +40,15 @@ async function getTestsByDiscipline() {
                   categoryId: "asc"
                 },
               }
-            }, 
-          }
+            },
+            where: {
+              Test: {
+                some: {
+                  NOT: undefined
+                }
+              }
+            }
+          },
         },
       },
     },
@@ -40,6 +58,57 @@ async function getTestsByDiscipline() {
   });
 }
 
+async function getTestsByTeacher() {
+  return await prisma.teacherDiscipline.findMany({
+    select: {
+      id: true,
+      teacher: {
+        select: {
+          id: true,
+          name: true
+        }
+      },
+      discipline: {
+        select: {
+          id: true,
+          name: true,
+        }
+      },
+      Test: {
+        select: {
+          id: true,
+          pdfUrl: true,
+          name: true,
+          category: {
+            select: {
+              id: true
+            }
+          }
+        }
+      }
+    },
+    where: {
+      Test: {
+        some: {
+          NOT: undefined
+        }
+      }
+    },
+    
+  })
+}
+
+async function getDisciplines() {
+  return await prisma.discipline.findMany({
+    select: {
+      id: true,
+      name: true
+    }
+  })
+}
+
 export const testsRepository = {
   getTestsByDiscipline,
+  getTestsByTeacher,
+  getDisciplines
 };
