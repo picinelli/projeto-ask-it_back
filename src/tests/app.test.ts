@@ -53,6 +53,29 @@ describe("Sign-In auth tests", () => {
   });
 });
 
+describe("GET tests endpoint test", () => {
+  it("given empty query string, should return 403", async () => {
+    // /tests/?groupBy=disciplines
+    const tests = await supertest(app).get("/tests")
+
+    expect(tests.statusCode).toBe(403)
+  })
+
+  it("given wrong type of query string, should return 403", async () => {
+    const tests = await supertest(app).get("/tests/?groupBy=SomeWrongQuery")
+
+    expect(tests.statusCode).toBe(403)
+  })
+
+  it("given valid types of query string, should return 200", async () => {
+    const disciplineTests = await supertest(app).get("/tests/?groupBy=disciplines")
+    const teacherTests = await supertest(app).get("/tests/?groupBy=teachers")
+
+    expect(disciplineTests.statusCode).toBe(200)
+    expect(teacherTests.statusCode).toBe(200)
+  })
+})
+
 afterAll(async () => {
   return await prisma.$executeRaw`DELETE FROM users WHERE email = ${login.email}`;
 });
