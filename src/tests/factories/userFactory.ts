@@ -6,7 +6,7 @@ function createLogin(email = 'teste99@teste99.com', passwordLength = 17) {
   return {
     email,
     password,
-    confirm_password: password
+    passwordConfirmation: password
   }
 }
 

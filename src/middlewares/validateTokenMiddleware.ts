@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import throwError from "../utils/throwError.js";
 import jwt from "jsonwebtoken"
+import prisma from "../database.js";
 
 export async function validateToken(
   req: Request,
@@ -14,9 +15,10 @@ export async function validateToken(
     const token = authorization.replace("Bearer", "").trim();
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
-    console.log(decodedToken)
-
     res.locals.token = decodedToken
+
+    const user = await prisma.user.findUnique({where: {id: res.locals.token.userId}})
+    if(!user) return throwError("User not found", 404)
   
     next();
   } catch(err) {

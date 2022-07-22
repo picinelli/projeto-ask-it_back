@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { authService } from "../services/authService.js";
 
 export type UserInfo = User & {
-  confirm_password: string;
+  passwordConfirmation: string;
 };
 
 export async function signUp(req: Request, res: Response) {

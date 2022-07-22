@@ -15,7 +15,8 @@ export interface tokenInfo {
 async function signUp(userInfo: UserInfo) {
   const user = await getUserByEmail(userInfo.email);
   if (user) throwError("This email is already in use", 409);
-  if (userInfo.password !== userInfo.confirm_password) throwError("passwords are not equal", 403);
+
+  if (userInfo.password !== userInfo.passwordConfirmation) throwError("passwords are not equal", 403);
 
   userInfo = { ...userInfo, password: await encryptBcrypt(userInfo.password) };
 

@@ -81,9 +81,8 @@ model Test {
   name                String
   pdfUrl              String
   categoryId          Int
-  teacherDisciplineId Int
+  teacherDisciplineId Int      
   createdAt           DateTime @default(now())
-
   category          Category          @relation(fields: [categoryId], references: [id])
   teacherDiscipline TeacherDiscipline @relation(fields: [teacherDisciplineId], references: [id])
 

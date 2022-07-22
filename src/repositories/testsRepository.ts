@@ -1,14 +1,9 @@
 import prisma from "../database.js";
+import { TestInfo } from "../schemas/testSchemas.js";
 
 async function getTestsByDiscipline() {
-  // return await prisma.discipline.findMany({
-  //   select: {
-
-  //   }
-  // })
-
-//TODO: Alterar Discipline para disciplines?
-  return await prisma.term.findMany({
+  //TODO: Alterar Discipline para disciplines?
+  const terms = await prisma.term.findMany({
     select: {
       id: true,
       number: true,
@@ -20,8 +15,8 @@ async function getTestsByDiscipline() {
             select: {
               teacher: {
                 select: {
-                  name: true
-                }
+                  name: true,
+                },
               },
               Test: {
                 select: {
@@ -33,29 +28,42 @@ async function getTestsByDiscipline() {
                     select: {
                       id: true,
                       name: true,
-                    }
-                  }
+                    },
+                  },
                 },
                 orderBy: {
-                  categoryId: "asc"
+                  categoryId: "asc",
                 },
-              }
+              },
             },
             where: {
               Test: {
                 some: {
-                  NOT: undefined
-                }
-              }
-            }
+                  NOT: undefined,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    where: {
+      Discipline: {
+        some: {
+          TeacherDiscipline: {
+            some: {
+              NOT: undefined,
+            },
           },
         },
       },
     },
     orderBy: {
-      number: 'asc'
+      number: "asc",
     },
   });
+
+  return terms;
 }
 
 async function getTestsByTeacher() {
@@ -65,14 +73,14 @@ async function getTestsByTeacher() {
       teacher: {
         select: {
           id: true,
-          name: true
-        }
+          name: true,
+        },
       },
       discipline: {
         select: {
           id: true,
           name: true,
-        }
+        },
       },
       Test: {
         select: {
@@ -81,34 +89,33 @@ async function getTestsByTeacher() {
           name: true,
           category: {
             select: {
-              id: true
-            }
-          }
-        }
-      }
+              id: true,
+            },
+          },
+        },
+      },
     },
     where: {
       Test: {
         some: {
-          NOT: undefined
-        }
-      }
+          NOT: undefined,
+        },
+      },
     },
-    
-  })
+  });
 }
 
-async function getDisciplines() {
-  return await prisma.discipline.findMany({
-    select: {
-      id: true,
-      name: true
-    }
-  })
+async function createTest(testInfo: TestInfo, teacherDisciplineId: number) {
+  return await prisma.test.create({ data: {
+    name: testInfo.name,
+    pdfUrl: testInfo.pdfUrl,
+    categoryId: testInfo.categoryId,
+    teacherDisciplineId
+  } });
 }
 
 export const testsRepository = {
   getTestsByDiscipline,
   getTestsByTeacher,
-  getDisciplines
+  createTest,
 };

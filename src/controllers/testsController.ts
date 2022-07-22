@@ -1,6 +1,18 @@
 import { Request, Response } from "express";
+import { TestInfo } from "../schemas/testSchemas.js";
 import { testsService } from "../services/testsService.js";
 import throwError from "../utils/throwError.js";
+
+export async function postTest(req: Request, res: Response) {
+  const testInfo: TestInfo = req.body
+
+  const data = await testsService.postTest(testInfo);
+  const id = data.id.toString()
+
+  console.log(id)
+
+  return res.status(201).send(id)
+}
 
 export async function getTests(req: Request, res: Response) {
   if (!req.query.groupBy)
