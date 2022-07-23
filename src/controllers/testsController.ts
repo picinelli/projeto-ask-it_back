@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import categoriesRepository from "../repositories/categoriesRepository.js";
 import { TestInfo } from "../schemas/testSchemas.js";
 import { testsService } from "../services/testsService.js";
 import throwError from "../utils/throwError.js";
@@ -29,8 +30,8 @@ export async function getTests(req: Request, res: Response) {
   }
 }
 
-export async function getDisciplines(req: Request, res: Response) {
-  const disciplines = await testsService.getDisciplines();
+export async function getCategories(req: Request, res: Response) {
+  const categories = await categoriesRepository.getCategories();
 
-  return res.status(200).send(disciplines);
+  return res.status(200).send({categories});
 }

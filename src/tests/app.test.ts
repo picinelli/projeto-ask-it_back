@@ -12,7 +12,6 @@ beforeEach(async () => {
   await prisma.$executeRaw`DELETE FROM "teachersDisciplines"`;
 });
 
-//TODO: Fazer o teste dos schemas!?
 //TODO: Ajeitar o /disciplines para o front
 
 describe("POST /sign-up", () => {
@@ -214,11 +213,11 @@ describe("GET /tests", () => {
   });
 });
 
-describe("GET /disciplines", () => {
-  it("given valid token, should return code 200 with all disciplines", async () => {
+describe("GET /categories", () => {
+  it("given valid token, should return code 200 with all categories", async () => {
     const token = await __SignUpSignInAndReturnToken();
     const request = await supertest(app)
-      .get("/disciplines")
+      .get("/categories")
       .set({ Authorization: token });
 
     expect(request.statusCode).toBe(200);
