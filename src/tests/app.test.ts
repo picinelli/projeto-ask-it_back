@@ -14,7 +14,7 @@ beforeEach(async () => {
 
 //TODO: Fazer o teste dos schemas!?
 
-describe("Sign-Up auth testing", () => {
+describe("POST /sign-up", () => {
   it("given valid email and password, should return 201 on 1st req and 409 on 2nd req", async () => {
     const result = await supertest(app).post("/sign-up").send(login);
     expect(result.statusCode).toBe(201);
@@ -24,7 +24,7 @@ describe("Sign-Up auth testing", () => {
   });
 });
 
-describe("Sign-In auth testing", () => {
+describe("POST /sign-in", () => {
   it("given non-existent email, should return 404", async () => {
     const login = userFactory.createLogin();
     delete login.passwordConfirmation;
@@ -56,7 +56,7 @@ describe("Sign-In auth testing", () => {
   });
 });
 
-describe("POST test endpoint testing", () => {
+describe("POST /test", () => {
   it("given correct info, should return 201", async () => {
     const token = await __SignUpSignInAndReturnToken();
     const testInfo = testFactory.createTestInfo();
@@ -102,7 +102,7 @@ describe("POST test endpoint testing", () => {
   });
 });
 
-describe("GET tests endpoint testing", () => {
+describe("GET /tests", () => {
   it("given empty query string, should return 403", async () => {
     const token = await __SignUpSignInAndReturnToken();
 
@@ -136,7 +136,7 @@ describe("GET tests endpoint testing", () => {
   });
 });
 
-describe("GET disciplines endpoint testing", () => {
+describe("GET /disciplines", () => {
   it("given valid token, should return code 200 with all disciplines", async () => {
     const token = await __SignUpSignInAndReturnToken();
     const request = await supertest(app)
