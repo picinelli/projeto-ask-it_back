@@ -19,11 +19,11 @@ export async function getTests(req: Request, res: Response) {
     throwError("You need to specify how to GroupBy the tests", 403);
   if (req.query.groupBy === "disciplines") {
     const tests = await testsService.getTestsByDiscipline();
-    return res.status(200).send(tests);
+    return res.status(200).send({tests});
   }
   if (req.query.groupBy === "teachers") {
     const tests = await testsService.getTestsByTeacher();
-    return res.status(200).send(tests);
+    return res.status(200).send({tests});
   } else {
     throwError("You need to choose a valid GroupBy query string", 403);
   }

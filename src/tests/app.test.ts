@@ -13,9 +13,8 @@ beforeEach(async () => {
 });
 
 //TODO: Fazer o teste dos schemas!?
-//TODO: Fazer o teste do /disciplines
 
-describe("Sign-Up auth tests", () => {
+describe("Sign-Up auth testing", () => {
   it("given valid email and password, should return 201 on 1st req and 409 on 2nd req", async () => {
     const result = await supertest(app).post("/sign-up").send(login);
     expect(result.statusCode).toBe(201);
@@ -25,7 +24,7 @@ describe("Sign-Up auth tests", () => {
   });
 });
 
-describe("Sign-In auth tests", () => {
+describe("Sign-In auth testing", () => {
   it("given non-existent email, should return 404", async () => {
     const login = userFactory.createLogin();
     delete login.passwordConfirmation;
@@ -76,9 +75,9 @@ describe("POST test endpoint testing", () => {
 
     const wrongTeacher = await supertest(app)
       .post("/test")
-      .send({...testInfo, teacherId: -5000})
+      .send({ ...testInfo, teacherId: -5000 })
       .set({ Authorization: token });
-  })
+  });
 
   it("given incorrect teacherId, categoryId or DisciplineId, should return 404", async () => {
     const token = await __SignUpSignInAndReturnToken();
@@ -86,15 +85,15 @@ describe("POST test endpoint testing", () => {
 
     const wrongTeacher = await supertest(app)
       .post("/test")
-      .send({...testInfo, teacherId: -5000})
+      .send({ ...testInfo, teacherId: -5000 })
       .set({ Authorization: token });
     const wrongCategory = await supertest(app)
       .post("/test")
-      .send({...testInfo, categoryId: -5000})
+      .send({ ...testInfo, categoryId: -5000 })
       .set({ Authorization: token });
     const wrongDiscipline = await supertest(app)
       .post("/test")
-      .send({...testInfo, disciplineId: -5000})
+      .send({ ...testInfo, disciplineId: -5000 })
       .set({ Authorization: token });
 
     expect(wrongTeacher.statusCode).toBe(404);
@@ -137,6 +136,17 @@ describe("GET tests endpoint testing", () => {
   });
 });
 
+describe("GET disciplines endpoint testing", () => {
+  it("given valid token, should return code 200 with all disciplines", async () => {
+    const token = await __SignUpSignInAndReturnToken();
+    const request = await supertest(app)
+      .get("/disciplines")
+      .set({ Authorization: token });
+
+    expect(request.statusCode).toBe(200)
+  });
+});
+
 async function __SignUpSignInAndReturnToken() {
   const login = userFactory.createLogin();
   const signUp = await supertest(app).post("/sign-up").send(login);
@@ -148,7 +158,7 @@ async function __SignUpSignInAndReturnToken() {
 
   expect(signInToken.statusCode).toBe(200);
 
-  return signInToken.text;
+  return signInToken.body.token;
 }
 
 afterAll(async () => {

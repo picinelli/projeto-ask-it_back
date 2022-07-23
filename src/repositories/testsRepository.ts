@@ -2,23 +2,22 @@ import prisma from "../database.js";
 import { TestInfo } from "../schemas/testSchemas.js";
 
 async function getTestsByDiscipline() {
-  //TODO: Alterar Discipline para disciplines?
   const terms = await prisma.term.findMany({
     select: {
       id: true,
       number: true,
-      Discipline: {
+      disciplines: {
         select: {
           id: true,
           name: true,
-          TeacherDiscipline: {
+          teacherDisciplines: {
             select: {
               teacher: {
                 select: {
                   name: true,
                 },
               },
-              Test: {
+              tests: {
                 select: {
                   id: true,
                   name: true,
@@ -37,7 +36,7 @@ async function getTestsByDiscipline() {
               },
             },
             where: {
-              Test: {
+              tests: {
                 some: {
                   NOT: undefined,
                 },
@@ -45,12 +44,19 @@ async function getTestsByDiscipline() {
             },
           },
         },
+        where: {
+          teacherDisciplines: {
+            some: {
+              NOT: undefined
+            }
+          }
+        }
       },
     },
     where: {
-      Discipline: {
+      disciplines: {
         some: {
-          TeacherDiscipline: {
+          teacherDisciplines: {
             some: {
               NOT: undefined,
             },
@@ -82,11 +88,12 @@ async function getTestsByTeacher() {
           name: true,
         },
       },
-      Test: {
+      tests: {
         select: {
           id: true,
           pdfUrl: true,
           name: true,
+          createdAt: true,
           category: {
             select: {
               id: true,
@@ -96,7 +103,7 @@ async function getTestsByTeacher() {
       },
     },
     where: {
-      Test: {
+      tests: {
         some: {
           NOT: undefined,
         },
@@ -106,12 +113,14 @@ async function getTestsByTeacher() {
 }
 
 async function createTest(testInfo: TestInfo, teacherDisciplineId: number) {
-  return await prisma.test.create({ data: {
-    name: testInfo.name,
-    pdfUrl: testInfo.pdfUrl,
-    categoryId: testInfo.categoryId,
-    teacherDisciplineId
-  } });
+  return await prisma.test.create({
+    data: {
+      name: testInfo.name,
+      pdfUrl: testInfo.pdfUrl,
+      categoryId: testInfo.categoryId,
+      teacherDisciplineId,
+    },
+  });
 }
 
 export const testsRepository = {

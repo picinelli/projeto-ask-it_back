@@ -31,7 +31,8 @@ async function signIn(userInfo: User) {
   const isPasswordCorrect = bcrypt.compareSync(password, user.password)
   if (!isPasswordCorrect) throwError("Email or password incorrect", 403)
 
-  return jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
+
+  return { token: jwt.sign({ userId: user.id }, process.env.JWT_SECRET)}
 }
 
 

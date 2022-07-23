@@ -24,7 +24,7 @@ model Category {
   name      String   @unique
   createdAt DateTime @default(now())
 
-  Test Test[]
+  tests Test[]
 
   @@map("categories")
 }
@@ -34,7 +34,7 @@ model Term {
   number    Int      @unique
   createdAt DateTime @default(now())
 
-  Discipline Discipline[]
+  disciplines Discipline[]
 
   @@map("terms")
 }
@@ -44,7 +44,7 @@ model Teacher {
   name      String   @unique
   createdAt DateTime @default(now())
 
-  TeacherDiscipline TeacherDiscipline[]
+  teacherDisciplines TeacherDiscipline[]
 
   @@map("teachers")
 }
@@ -57,7 +57,7 @@ model Discipline {
 
   term Term @relation(fields: [termId], references: [id])
 
-  TeacherDiscipline TeacherDiscipline[]
+  teacherDisciplines TeacherDiscipline[]
 
   @@map("disciplines")
 }
@@ -71,7 +71,7 @@ model TeacherDiscipline {
   teacher    Teacher    @relation(fields: [teacherId], references: [id])
   discipline Discipline @relation(fields: [disciplineId], references: [id])
 
-  Test Test[]
+  tests Test[]
 
   @@map("teachersDisciplines")
 }
