@@ -13,6 +13,7 @@ beforeEach(async () => {
 });
 
 //TODO: Fazer o teste dos schemas!?
+//TODO: Ajeitar o /disciplines para o front
 
 describe("POST /sign-up", () => {
   it("given valid email and password, should return 201 on 1st req and 409 on 2nd req", async () => {
@@ -21,6 +22,27 @@ describe("POST /sign-up", () => {
 
     const result2 = await supertest(app).post("/sign-up").send(login);
     expect(result2.statusCode).toBe(409);
+  });
+
+  it("given wrong email schema format, should return 400", async () => {
+    const login = userFactory.createLogin();
+    login.email = "formatoEmailIncorreto";
+    const result = await supertest(app).post("/sign-up").send(login);
+    expect(result.statusCode).toBe(400);
+  });
+
+  it("given wrong password schema format, should return 400", async () => {
+    const login = userFactory.createLogin();
+    login.password = "<5";
+    const result = await supertest(app).post("/sign-up").send(login);
+    expect(result.statusCode).toBe(400);
+  });
+
+  it("given wrong passwordConfirmation schema format, should return 400", async () => {
+    const login = userFactory.createLogin();
+    login.passwordConfirmation = "notSame";
+    const result = await supertest(app).post("/sign-up").send(login);
+    expect(result.statusCode).toBe(400);
   });
 });
 
@@ -53,6 +75,27 @@ describe("POST /sign-in", () => {
     const result = await supertest(app).post("/sign-in").send(login);
 
     expect(result.statusCode).toBe(200);
+  });
+
+  it("given wrong email schema format, should return 400", async () => {
+    const login = userFactory.createLogin();
+    login.email = "formatoEmailIncorreto";
+    const result = await supertest(app).post("/sign-up").send(login);
+    expect(result.statusCode).toBe(400);
+  });
+
+  it("given wrong password schema format, should return 400", async () => {
+    const login = userFactory.createLogin();
+    login.password = "<5";
+    const result = await supertest(app).post("/sign-up").send(login);
+    expect(result.statusCode).toBe(400);
+  });
+
+  it("given wrong passwordConfirmation schema format, should return 400", async () => {
+    const login = userFactory.createLogin();
+    login.passwordConfirmation = "notSame";
+    const result = await supertest(app).post("/sign-up").send(login);
+    expect(result.statusCode).toBe(400);
   });
 });
 
@@ -100,6 +143,41 @@ describe("POST /test", () => {
     expect(wrongCategory.statusCode).toBe(404);
     expect(wrongDiscipline.statusCode).toBe(404);
   });
+
+  it("given wrong name schema format, should return 400", async () => {
+    const test: any = testFactory.createTestInfo();
+    test.name = 31242;
+    const result = await supertest(app).post("/sign-up").send(test);
+    expect(result.statusCode).toBe(400);
+  });
+
+  it("given wrong pdfUrl schema format, should return 400", async () => {
+    const test = testFactory.createTestInfo();
+    test.pdfUrl = "wrongURIformat";
+    const result = await supertest(app).post("/sign-up").send(test);
+    expect(result.statusCode).toBe(400);
+  });
+
+  it("given wrong categoryId schema format, should return 400", async () => {
+    const test: any = testFactory.createTestInfo();
+    test.categoryId = "notNumber";
+    const result = await supertest(app).post("/sign-up").send(test);
+    expect(result.statusCode).toBe(400);
+  });
+
+  it("given wrong teacherId schema format, should return 400", async () => {
+    const test: any = testFactory.createTestInfo();
+    test.teacherId = "notNumber";
+    const result = await supertest(app).post("/sign-up").send(test);
+    expect(result.statusCode).toBe(400);
+  });
+
+  it("given wrong disciplineId schema format, should return 400", async () => {
+    const test: any = testFactory.createTestInfo();
+    test.disciplineId = "notNumber";
+    const result = await supertest(app).post("/sign-up").send(test);
+    expect(result.statusCode).toBe(400);
+  });
 });
 
 describe("GET /tests", () => {
@@ -143,7 +221,7 @@ describe("GET /disciplines", () => {
       .get("/disciplines")
       .set({ Authorization: token });
 
-    expect(request.statusCode).toBe(200)
+    expect(request.statusCode).toBe(200);
   });
 });
 
