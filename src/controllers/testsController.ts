@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import categoriesRepository from "../repositories/categoriesRepository.js";
 import { TestInfo } from "../schemas/testSchemas.js";
 import { testsService } from "../services/testsService.js";
 import throwError from "../utils/throwError.js";
@@ -9,8 +8,6 @@ export async function postTest(req: Request, res: Response) {
 
   const data = await testsService.postTest(testInfo);
   const id = data.id.toString()
-
-  console.log(id)
 
   return res.status(201).send(id)
 }
@@ -28,10 +25,4 @@ export async function getTests(req: Request, res: Response) {
   } else {
     throwError("You need to choose a valid GroupBy query string", 403);
   }
-}
-
-export async function getCategories(req: Request, res: Response) {
-  const categories = await categoriesRepository.getCategories();
-
-  return res.status(200).send({categories});
 }

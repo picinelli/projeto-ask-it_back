@@ -12,8 +12,6 @@ beforeEach(async () => {
   await prisma.$executeRaw`DELETE FROM "teachersDisciplines"`;
 });
 
-//TODO: Ajeitar o /disciplines para o front
-
 describe("POST /sign-up", () => {
   it("given valid email and password, should return 201 on 1st req and 409 on 2nd req", async () => {
     const result = await supertest(app).post("/sign-up").send(login);

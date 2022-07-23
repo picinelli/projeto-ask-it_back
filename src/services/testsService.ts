@@ -33,15 +33,8 @@ async function getTestsByTeacher() {
   return tests;
 }
 
-async function getCisciplines() {
-  const categories = await categoriesRepository.getCategories();
-
-  return categories;
-}
-
 export const testsService = {
   getTestsByDiscipline,
   getTestsByTeacher,
-  getCisciplines,
   postTest,
 };
