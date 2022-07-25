@@ -1,8 +1,5 @@
-import bcrypt from "bcrypt";
-
 import prisma from "../src/database.js";
 
-// create admin user
 async function main() {
   await prisma.$executeRaw`INSERT INTO terms ("number") VALUES (1)`;
   await prisma.$executeRaw`INSERT INTO terms ("number") VALUES (2)`;
