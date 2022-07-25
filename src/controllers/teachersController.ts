@@ -12,8 +12,8 @@ export async function getTeachersByDisciplineId(req: Request, res: Response) {
   const disciplineId = req.params.id
   const numId = Number(disciplineId)
 
+  if(isNaN(numId) || typeof(numId) !== 'number') throwError("You need to send a valid format Id", 403)
   if(!disciplineId) throwError("You need to send a disciplineId", 403)
-  if(typeof(numId) !== 'number') throwError("You need to send a valid format Id", 403)
 
   const teachers = await teachersService.getTeachersByDisciplineId(numId);
 

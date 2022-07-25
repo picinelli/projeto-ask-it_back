@@ -222,6 +222,47 @@ describe("GET /categories", () => {
   });
 });
 
+describe("GET /disciplines", () => {
+  it("given valid token, should return code 200 with all disciplines", async () => {
+    const token = await __SignUpSignInAndReturnToken();
+    const request = await supertest(app)
+      .get("/disciplines")
+      .set({ Authorization: token });
+
+    expect(request.statusCode).toBe(200);
+  });
+});
+
+describe("GET /teachers", () => {
+  it("given valid token, should return code 200 with all teachers", async () => {
+    const token = await __SignUpSignInAndReturnToken();
+    const request = await supertest(app)
+      .get("/teachers")
+      .set({ Authorization: token });
+
+    expect(request.statusCode).toBe(200);
+  });
+});
+
+describe("GET /teachers/discipline/:id", () => {
+  it("given valid token and id, should return code 200 with all teachers", async () => {
+    const token = await __SignUpSignInAndReturnToken();
+    const request = await supertest(app)
+      .get("/teachers/discipline/2")
+      .set({ Authorization: token });
+
+    expect(request.statusCode).toBe(200);
+  });
+  it("given wrong id format, should return code 403", async () => {
+    const token = await __SignUpSignInAndReturnToken();
+    const request = await supertest(app)
+      .get("/teachers/discipline/abc")
+      .set({ Authorization: token });
+
+    expect(request.statusCode).toBe(403);
+  });
+});
+
 async function __SignUpSignInAndReturnToken() {
   const login = userFactory.createLogin();
   const signUp = await supertest(app).post("/sign-up").send(login);
