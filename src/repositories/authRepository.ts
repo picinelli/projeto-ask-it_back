@@ -13,7 +13,8 @@ export async function insertUser(userInfo: User) {
   return await prisma.user.create({
     data: {
       email: userInfo.email,
-      password: userInfo.password,
+      username: userInfo.username,
+      password: userInfo.password
     },
   });
 }

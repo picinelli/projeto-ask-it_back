@@ -11,80 +11,49 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  username  String     @unique
   password  String
-  createdAt DateTime @default(now())
+  createdAt DateTime   @default(now())
+  questions Question[]
 
   @@map("users")
 }
 
-model Category {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
+model Question {
+  id          Int      @id @default(autoincrement())
+  description String
+  views       Int
+  userId      Int
+  createdAt   DateTime @default(now())
 
-  tests Test[]
+  user    User     @relation(fields: [userId], references: [id])
+  answers Answer[]
+  votes   Vote[]
 
-  @@map("categories")
+  @@map("questions")
 }
 
-model Term {
-  id        Int      @id @default(autoincrement())
-  number    Int      @unique
-  createdAt DateTime @default(now())
+model Answer {
+  id          Int      @id @default(autoincrement())
+  description String
+  username    String
+  questionId  Int
+  createdAt   DateTime @default(now())
 
-  disciplines Discipline[]
+  question Question @relation(fields: [questionId], references: [id])
 
-  @@map("terms")
+  @@map("answers")
 }
 
-model Teacher {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
+model Vote {
+  id         Int      @id @default(autoincrement())
+  username   String
+  questionId Int
+  createdAt  DateTime @default(now())
 
-  teacherDisciplines TeacherDiscipline[]
+  question Question @relation(fields: [questionId], references: [id])
 
-  @@map("teachers")
-}
-
-model Discipline {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  termId    Int
-  createdAt DateTime @default(now())
-
-  term Term @relation(fields: [termId], references: [id])
-
-  teacherDisciplines TeacherDiscipline[]
-
-  @@map("disciplines")
-}
-
-model TeacherDiscipline {
-  id           Int      @id @default(autoincrement())
-  teacherId    Int
-  disciplineId Int
-  createdAt    DateTime @default(now())
-
-  teacher    Teacher    @relation(fields: [teacherId], references: [id])
-  discipline Discipline @relation(fields: [disciplineId], references: [id])
-
-  tests Test[]
-
-  @@map("teachersDisciplines")
-}
-
-model Test {
-  id                  Int      @id @default(autoincrement())
-  name                String
-  pdfUrl              String
-  categoryId          Int
-  teacherDisciplineId Int      
-  createdAt           DateTime @default(now())
-  category          Category          @relation(fields: [categoryId], references: [id])
-  teacherDiscipline TeacherDiscipline @relation(fields: [teacherDisciplineId], references: [id])
-
-  @@map("tests")
+  @@map("votes")
 }
