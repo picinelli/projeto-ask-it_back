@@ -15,6 +15,12 @@ export async function getQuestion(id: number) {
   return await prisma.question.findUnique({ where: { id } });
 }
 
-export async function getAllQuestions(id: number) {
-  return await prisma.question.findMany()
+export async function getPaginatedQuestions(page: number) {
+  return await prisma.question.findMany({
+    skip: (page - 1) * 10,
+    take: 10,
+    orderBy: {
+      createdAt: 'desc'
+    }
+  })
 }
