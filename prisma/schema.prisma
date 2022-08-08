@@ -55,5 +55,6 @@ model Vote {
 
   question Question @relation(fields: [questionId], references: [id])
 
+  @@unique([questionId, username])
   @@map("votes")
 }
