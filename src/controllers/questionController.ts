@@ -44,3 +44,11 @@ export async function getSpecificQuestion(req: Request, res: Response) {
 
   res.status(200).send(question);
 }
+
+export async function getQuestionsBySearch(req: Request, res: Response) {
+  const description: string = req.body.description
+
+  const question = await questionService.getQuestionsBySearch(description);
+
+  res.status(200).send(question);
+}

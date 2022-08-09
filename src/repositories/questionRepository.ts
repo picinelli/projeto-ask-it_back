@@ -28,7 +28,7 @@ export async function checkVotedQuestion(voteData: VoteData) {
       votes: {
         some: {
           username: voteData.username,
-          questionId: voteData.questionId
+          questionId: voteData.questionId,
         },
       },
     },
@@ -66,10 +66,11 @@ export async function getQuestion(id: number) {
       answers: true,
       votes: {
         select: {
-          id: true
-        }, where: {
-          questionId: id
-        }
+          id: true,
+        },
+        where: {
+          questionId: id,
+        },
       },
     },
     where: {
@@ -93,6 +94,21 @@ export async function getPaginatedQuestions(page: number) {
       },
       answers: true,
       votes: true,
+    },
+  });
+}
+
+export async function getIlikeQuestions(description: string) {
+  return await prisma.question.findMany({
+    select: {
+      id: true,
+      description: true
+    },
+    where: {
+      description: {
+        contains: description,
+        mode: "insensitive",
+      },
     },
   });
 }

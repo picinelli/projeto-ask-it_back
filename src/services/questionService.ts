@@ -3,6 +3,7 @@ import {
   checkVotedQuestion,
   createNewQuestion,
   deleteVoteQuestion,
+  getIlikeQuestions,
   getPaginatedQuestions,
   getQuestion,
   getQuestionsAmount,
@@ -30,6 +31,12 @@ async function getSpecificQuestion(id: number) {
   return question;
 }
 
+async function getQuestionsBySearch(description: string) {
+  const questions = await getIlikeQuestions(description);
+
+  return questions;
+}
+
 async function viewQuestion(id: number) {
   const question = await insertViewQuestion(id);
   if (!question) throwError("Question not found", 404);
@@ -55,4 +62,5 @@ export default {
   getSpecificQuestion,
   viewQuestion,
   voteQuestion,
+  getQuestionsBySearch
 };
