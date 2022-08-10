@@ -16,6 +16,7 @@ export async function createQuestion(req: Request, res: Response) {
 export async function viewQuestion(req: Request, res: Response) {
   const questionId = Number(req.params.id);
 
+  console.log(questionId, "AAAAAAAAAAAAAAAAAAAAA")
   await questionService.viewQuestion(questionId);
 
   res.sendStatus(201);

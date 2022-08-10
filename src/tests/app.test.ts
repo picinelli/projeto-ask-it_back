@@ -1,16 +1,17 @@
-import supertest from "supertest";
+import supertest, { Response } from "supertest";
 import prisma from "../database.js";
 import app from "../app.js";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { faker } from "@faker-js/faker";
 import userFactory from "./factories/userFactory.js";
+import { Question } from "@prisma/client";
 
 const login = userFactory.createLogin();
 
 beforeEach(async () => {
-  await prisma.$executeRaw`DELETE FROM questions`;
-  await prisma.$executeRaw`DELETE FROM answers`;
   await prisma.$executeRaw`DELETE FROM votes`;
+  await prisma.$executeRaw`DELETE FROM answers`;
+  await prisma.$executeRaw`DELETE FROM questions`;
   await prisma.$executeRaw`DELETE FROM users WHERE email = ${login.email}`;
 });
 
@@ -126,7 +127,138 @@ describe("POST /question", () => {
       })
       .set({ Authorization: token });
 
+    const questionExist = await prisma.question.findUnique({
+      where: { id: request.body.id },
+    });
+
     expect(request.statusCode).toBe(201);
+    expect(questionExist).toHaveProperty("description");
+  });
+
+  it("given wrong description schema format, should return 400", async () => {
+    const request = await supertest(app).post("/question").send({
+      description: 1,
+      userId: 1,
+    });
+
+    expect(request.statusCode).toBe(400);
+  });
+
+  it("given wrong userId schema format, should return 400", async () => {
+    const request = await supertest(app)
+      .post("/question")
+      .send({
+        description: faker.lorem.lines(6),
+        userId: "1",
+      });
+
+    expect(request.statusCode).toBe(400);
+  });
+});
+
+describe("POST /question/view/:id", () => {
+  it("given valid id, should increase question viewcount and return 201", async () => {
+    const token = await __SignUpSignInAndReturnToken();
+    const userId = __GetUserIdByToken(token);
+    const question = await supertest(app)
+      .post("/question")
+      .send({
+        description: faker.lorem.lines(6),
+        userId,
+      })
+      .set({ Authorization: token });
+
+    const request = await supertest(app).post(
+      `/question/view/${question.body.id}`
+    );
+
+    const viewedQuestion = await prisma.question.findUnique({
+      where: { id: question.body.id },
+    });
+
+    expect(request.statusCode).toBe(201);
+    expect(viewedQuestion.views).toBeGreaterThan(0);
+  });
+
+  it("given invalid question id, should return 404", async () => {
+    const request = await supertest(app).post(`/question/view/-1`);
+
+    expect(request.statusCode).toBe(404);
+  });
+});
+
+describe("POST /question/vote", () => {
+  it("given valid id, should increase and decrease question viewcount and return 201", async () => {
+    const token = await __SignUpSignInAndReturnToken();
+    const userId = __GetUserIdByToken(token);
+    const question = await supertest(app)
+      .post("/question")
+      .send({
+        description: faker.lorem.lines(6),
+        userId,
+      })
+      .set({ Authorization: token });
+
+    await supertest(app)
+      .post("/question/vote")
+      .send({
+        questionId: question.body.id,
+        username: "teste",
+      })
+      .set({ Authorization: token });
+
+    const voteQuestion = await prisma.vote.findMany({
+      where: { questionId: question.body.id },
+    });
+
+    expect(voteQuestion.length).toBe(1);
+
+    await supertest(app)
+      .post("/question/vote")
+      .send({
+        questionId: question.body.id,
+        username: "teste",
+      })
+      .set({ Authorization: token });
+
+    const unvoteQuestion = await prisma.vote.findMany({
+      where: { questionId: question.body.id },
+    });
+
+    expect(unvoteQuestion.length).toBe(0);
+  });
+
+  it("given wrong questionId schema format, should return 400", async () => {
+    const request = await supertest(app)
+      .post("/question/vote")
+      .send({
+        questionId: "1",
+        username: faker.lorem.word(20),
+      });
+
+    expect(request.statusCode).toBe(400);
+  });
+
+  it("given wrong username schema format, should return 400", async () => {
+    const request = await supertest(app).post("/question/vote").send({
+      questionId: 1,
+      username: 1,
+    });
+
+    expect(request.statusCode).toBe(400);
+  });
+
+  it("given invalid question id, should return 404", async () => {
+    const token = await __SignUpSignInAndReturnToken();
+    const request = await supertest(app)
+      .post("/question/vote")
+      .send({
+        questionId: -1,
+        username: "teste",
+      })
+      .set({ Authorization: token });
+
+    expect(request.statusCode).toBe(404);
   });
 });
 
@@ -151,5 +283,5 @@ function __GetUserIdByToken(token: string) {
 }
 
 afterAll(async () => {
-  return await prisma.$disconnect()
-})
+  return await prisma.$disconnect();
+});

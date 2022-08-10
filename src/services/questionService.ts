@@ -38,8 +38,10 @@ async function getQuestionsBySearch(description: string) {
 }
 
 async function viewQuestion(id: number) {
+  const isQuestionExist = await getQuestion(id)
+  if (!isQuestionExist) throwError("Question not found", 404);
+
   const question = await insertViewQuestion(id);
-  if (!question) throwError("Question not found", 404);
 
   return question;
 }
@@ -49,6 +51,7 @@ async function voteQuestion(voteData: VoteData) {
   if (!question) throwError("Question not found", 404);
 
   const alreadyVoted = await checkVotedQuestion(voteData);
+
   if (alreadyVoted) {
     return await deleteVoteQuestion(voteData);
   } else {
