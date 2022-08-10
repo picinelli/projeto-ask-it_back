@@ -1,17 +1,17 @@
-import {faker} from "@faker-js/faker"
+import { faker } from "@faker-js/faker";
 
-
-function createLogin(email = 'teste99@teste99.com', passwordLength = 17) {
-  const password = faker.internet.password(passwordLength)
+function createLogin(email = "teste99@teste99.com", passwordLength = 17) {
+  const password = faker.internet.password(passwordLength);
   return {
+    username: faker.lorem.word(10),
     email,
     password,
-    passwordConfirmation: password
-  }
+    passwordConfirmation: password,
+  };
 }
 
 const userFactory = {
-  createLogin
-}
+  createLogin,
+};
 
-export default userFactory
+export default userFactory;
