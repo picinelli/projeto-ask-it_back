@@ -22,9 +22,18 @@ function createUser(email = "teste99@teste99.com", passwordLength = 17) {
   };
 }
 
+function createUserData(email = "teste99@teste99.com") {
+  return {
+    id: 1,
+    username: "teste",
+    email
+  };
+}
+
 const userFactory = {
   createLogin,
   createUser,
+  createUserData
 };
 
 export default userFactory;

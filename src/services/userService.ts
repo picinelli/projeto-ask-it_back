@@ -1,8 +1,8 @@
 import throwError from "../utils/throwError.js";
-import { getUserInfoById } from "../repositories/userRepository.js";
+import { userRepository } from "../repositories/userRepository.js";
 
 async function getUserInfo(userId: number) {
-  const user = await getUserInfoById(userId);
+  const user = await userRepository.getUserInfoById(userId);
   if (!user) throwError("User not found", 404);
 
   return user
