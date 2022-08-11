@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
 
-function createLogin(email = "teste99@teste99.com", passwordLength = 17) {
+function createLogin(email = faker.internet.email(), passwordLength = 17) {
   const password = faker.internet.password(passwordLength);
   return {
-    username: "teste",
+    username: faker.internet.userName(),
     email,
     password,
     passwordConfirmation: password,

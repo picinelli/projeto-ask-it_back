@@ -3,12 +3,12 @@ import { jest } from "@jest/globals";
 import { authRepository } from "../../repositories/authRepository.js";
 import { authService } from "../../services/authService.js";
 import userFactory from "../factories/userFactory.js";
+import bcrypt from 'bcrypt'
 
-beforeEach(async () => {
+beforeEach(() => {
   jest.clearAllMocks();
 });
 
-//FIXME: Esta sempre caindo no if
 describe("UNIT test - signUp", () => {
   it("given existent email, should throw error", async () => {
     const userData = userFactory.createUser();
@@ -33,5 +33,39 @@ describe("UNIT test - signUp", () => {
     await authService.signUp(userFactory.createLogin());
 
     expect(authRepository.insertUser).toBeCalledTimes(1);
+  });
+});
+
+describe("UNIT test - signIn", () => {
+  it("given non-existent email, should receive error", async () => {
+    jest.spyOn(authRepository, "getUserByEmail").mockResolvedValueOnce(null);
+
+    const request = authService.signIn(userFactory.createLogin());
+
+    expect(request).rejects.toEqual({
+      type: 404,
+      message: "This account does not exists!",
+    });
+  });
+
+  it("given existent email with correct pass, should return token", async () => {
+    jest.spyOn(authRepository, "getUserByEmail").mockResolvedValueOnce(userFactory.createUser());
+    jest.spyOn(bcrypt, 'compareSync').mockImplementation(() => true)
+
+    const request = await authService.signIn(userFactory.createLogin());
+
+    expect(request.token).toBeTruthy()
+  });
+
+  it("given existent email with correct pass, should return token", async () => {
+    jest.spyOn(authRepository, "getUserByEmail").mockResolvedValueOnce(userFactory.createUser());
+    jest.spyOn(bcrypt, 'compareSync').mockImplementation(() => false)
+
+    const request = authService.signIn(userFactory.createLogin());
+
+    expect(request).rejects.toEqual({
+      type: 403,
+      message: "Email or password incorrect",
+    });
   });
 });
