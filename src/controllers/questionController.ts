@@ -16,7 +16,6 @@ export async function createQuestion(req: Request, res: Response) {
 export async function viewQuestion(req: Request, res: Response) {
   const questionId = Number(req.params.id);
 
-  console.log(questionId, "AAAAAAAAAAAAAAAAAAAAA")
   await questionService.viewQuestion(questionId);
 
   res.sendStatus(201);
@@ -33,9 +32,11 @@ export async function voteQuestion(req: Request, res: Response) {
 export async function getQuestionsPage(req: Request, res: Response) {
   const page = Number(req.params.page);
 
+  if(page < 0) return res.status(400).send("Insert a valid page number")
+
   const questions = await questionService.getQuestionsPage(page);
 
-  res.status(201).send(questions);
+  res.status(200).send(questions);
 }
 
 export async function getSpecificQuestion(req: Request, res: Response) {

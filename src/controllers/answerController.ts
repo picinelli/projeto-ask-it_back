@@ -7,6 +7,8 @@ export type AnswerData = Omit<Answer, "createdAt" | "id">
 export async function createAnswer(req: Request, res: Response) {
   const answerData: AnswerData = req.body
 
+  console.log(answerData, "AAAAAAAAAAAAAAAAA")
+
   await answerService.createAnswer(answerData);
 
   res.sendStatus(201);

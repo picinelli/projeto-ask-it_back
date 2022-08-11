@@ -118,3 +118,15 @@ export async function getQuestionsAmount() {
     _count: true,
   });
 }
+
+export const questionRepository = {
+  createNewQuestion,
+  insertViewQuestion,
+  checkVotedQuestion,
+  insertVoteQuestion,
+  deleteVoteQuestion,
+  getQuestion,
+  getPaginatedQuestions,
+  getIlikeQuestions,
+  getQuestionsAmount
+}

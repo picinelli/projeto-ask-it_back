@@ -47,7 +47,7 @@ async function viewQuestion(id: number) {
 }
 
 async function voteQuestion(voteData: VoteData) {
-  const question = await getSpecificQuestion(voteData.questionId);
+  const question = await getQuestion(voteData.questionId);
   if (!question) throwError("Question not found", 404);
 
   const alreadyVoted = await checkVotedQuestion(voteData);

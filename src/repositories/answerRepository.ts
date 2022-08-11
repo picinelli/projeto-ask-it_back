@@ -28,4 +28,10 @@ export async function getQuestionAnswersAmount(id: number) {
   })
 }
 
+export const answerRepository = {
+  insertAnswer,
+  getAnswers,
+  getQuestionAnswersAmount
+}
+
 

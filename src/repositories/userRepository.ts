@@ -10,3 +10,7 @@ export async function getUserInfoById(id: number) {
     where: { id },
   });
 }
+
+export const userRepository = {
+  getUserInfoById
+}
