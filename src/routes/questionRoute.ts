@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createQuestion,
+  deleteQuestion,
   getQuestionsBySearch,
   getQuestionsPage,
   getSpecificQuestion,
@@ -20,5 +21,6 @@ questionRoute.post("/question/vote", validateSchema(voteSchema), validateToken, 
 questionRoute.post("/search/questions", validateSchema(searchQuestionSchema), getQuestionsBySearch);
 questionRoute.get("/question/:id", getSpecificQuestion);
 questionRoute.get("/questions/:page", getQuestionsPage);
+questionRoute.delete("/question/:id", validateToken, deleteQuestion)
 
 export default questionRoute;

@@ -1,4 +1,4 @@
-import { Question, Vote } from "@prisma/client";
+import { Question, User, Vote } from "@prisma/client";
 import { Request, Response } from "express";
 import questionService from "../services/questionService.js";
 
@@ -53,4 +53,13 @@ export async function getQuestionsBySearch(req: Request, res: Response) {
   const question = await questionService.getQuestionsBySearch(description);
 
   res.status(200).send(question);
+}
+
+export async function deleteQuestion(req: Request, res: Response) {
+  const questionId = Number(req.params.id);
+  const user: User = res.locals.user
+
+  await questionService.deleteSpecificQuestion(questionId, user);
+
+  res.sendStatus(200);
 }

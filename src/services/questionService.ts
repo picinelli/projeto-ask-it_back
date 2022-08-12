@@ -1,5 +1,6 @@
+import { User } from "@prisma/client";
 import { QuestionData, VoteData } from "../controllers/questionController.js";
-import {questionRepository} from "../repositories/questionRepository.js";
+import { questionRepository } from "../repositories/questionRepository.js";
 import throwError from "../utils/throwError.js";
 
 async function createQuestion(questionData: QuestionData) {
@@ -28,7 +29,7 @@ async function getQuestionsBySearch(description: string) {
 }
 
 async function viewQuestion(id: number) {
-  const isQuestionExist = await questionRepository.getQuestion(id)
+  const isQuestionExist = await questionRepository.getQuestion(id);
   if (!isQuestionExist) throwError("Question not found", 404);
 
   const question = await questionRepository.insertViewQuestion(id);
@@ -45,8 +46,19 @@ async function voteQuestion(voteData: VoteData) {
   if (alreadyVoted) {
     return await questionRepository.deleteVoteQuestion(voteData);
   } else {
-    return await questionRepository.insertVoteQuestion(voteData)
+    return await questionRepository.insertVoteQuestion(voteData);
   }
+}
+
+async function deleteSpecificQuestion(id: number, user: User) {
+  const question = await questionRepository.getQuestion(id);
+  if (!question) throwError("Question not found", 404);
+
+  if (question.user.username !== user.username) {
+    throwError("This is not your question", 401);
+  }
+
+  return await questionRepository.deleteQuestion(id);
 }
 
 export default {
@@ -55,5 +67,6 @@ export default {
   getSpecificQuestion,
   viewQuestion,
   voteQuestion,
-  getQuestionsBySearch
+  getQuestionsBySearch,
+  deleteSpecificQuestion,
 };

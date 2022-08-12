@@ -102,7 +102,7 @@ async function getIlikeQuestions(description: string) {
   return await prisma.question.findMany({
     select: {
       id: true,
-      description: true
+      description: true,
     },
     where: {
       description: {
@@ -119,6 +119,10 @@ async function getQuestionsAmount() {
   });
 }
 
+async function deleteQuestion(id: number) {
+  return await prisma.question.delete({ where: { id } });
+}
+
 export const questionRepository = {
   createNewQuestion,
   insertViewQuestion,
@@ -128,5 +132,6 @@ export const questionRepository = {
   getQuestion,
   getPaginatedQuestions,
   getIlikeQuestions,
-  getQuestionsAmount
-}
+  getQuestionsAmount,
+  deleteQuestion,
+};

@@ -19,6 +19,8 @@ export async function validateToken(
 
     const user = await prisma.user.findUnique({where: {id: res.locals.token.userId}})
     if(!user) return throwError("User not found", 404)
+
+    res.locals.user = user
   
     next();
   } catch(err) {
