@@ -1,7 +1,7 @@
 import { QuestionData, VoteData } from "../controllers/questionController.js";
 import prisma from "../database.js";
 
-export async function createNewQuestion(questionData: QuestionData) {
+async function createNewQuestion(questionData: QuestionData) {
   return await prisma.question.create({
     data: {
       description: questionData.description,
@@ -11,7 +11,7 @@ export async function createNewQuestion(questionData: QuestionData) {
   });
 }
 
-export async function insertViewQuestion(id: number) {
+async function insertViewQuestion(id: number) {
   return await prisma.question.update({
     data: {
       views: { increment: 1 },
@@ -22,7 +22,7 @@ export async function insertViewQuestion(id: number) {
   });
 }
 
-export async function checkVotedQuestion(voteData: VoteData) {
+async function checkVotedQuestion(voteData: VoteData) {
   return await prisma.question.findFirst({
     where: {
       votes: {
@@ -35,7 +35,7 @@ export async function checkVotedQuestion(voteData: VoteData) {
   });
 }
 
-export async function insertVoteQuestion(voteData: VoteData) {
+async function insertVoteQuestion(voteData: VoteData) {
   return await prisma.vote.create({
     data: {
       questionId: voteData.questionId,
@@ -44,7 +44,7 @@ export async function insertVoteQuestion(voteData: VoteData) {
   });
 }
 
-export async function deleteVoteQuestion(voteData: VoteData) {
+async function deleteVoteQuestion(voteData: VoteData) {
   return await prisma.vote.delete({
     where: {
       questionId_username: {
@@ -55,7 +55,7 @@ export async function deleteVoteQuestion(voteData: VoteData) {
   });
 }
 
-export async function getQuestion(id: number) {
+async function getQuestion(id: number) {
   return await prisma.question.findUnique({
     include: {
       user: {
@@ -79,7 +79,7 @@ export async function getQuestion(id: number) {
   });
 }
 
-export async function getPaginatedQuestions(page: number) {
+async function getPaginatedQuestions(page: number) {
   return await prisma.question.findMany({
     skip: (page - 1) * 10,
     take: 10,
@@ -98,7 +98,7 @@ export async function getPaginatedQuestions(page: number) {
   });
 }
 
-export async function getIlikeQuestions(description: string) {
+async function getIlikeQuestions(description: string) {
   return await prisma.question.findMany({
     select: {
       id: true,
@@ -113,7 +113,7 @@ export async function getIlikeQuestions(description: string) {
   });
 }
 
-export async function getQuestionsAmount() {
+async function getQuestionsAmount() {
   return await prisma.question.aggregate({
     _count: true,
   });

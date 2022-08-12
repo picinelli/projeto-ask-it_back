@@ -371,7 +371,7 @@ describe("GET /answers/:id", () => {
 
 
 
-async function __CreateQuestionAndReturnInfo(userId: number, token: string) {
+export async function __CreateQuestionAndReturnInfo(userId: number, token: string) {
   return await supertest(app)
   .post("/question")
   .send({

@@ -1,61 +1,51 @@
 import { QuestionData, VoteData } from "../controllers/questionController.js";
-import {
-  checkVotedQuestion,
-  createNewQuestion,
-  deleteVoteQuestion,
-  getIlikeQuestions,
-  getPaginatedQuestions,
-  getQuestion,
-  getQuestionsAmount,
-  insertViewQuestion,
-  insertVoteQuestion,
-} from "../repositories/questionRepository.js";
+import {questionRepository} from "../repositories/questionRepository.js";
 import throwError from "../utils/throwError.js";
 
 async function createQuestion(questionData: QuestionData) {
-  return await createNewQuestion(questionData);
+  return await questionRepository.createNewQuestion(questionData);
 }
 
 async function getQuestionsPage(page: number) {
   const questions = {
-    questions: await getPaginatedQuestions(page),
-    amount: await getQuestionsAmount(),
+    questions: await questionRepository.getPaginatedQuestions(page),
+    amount: await questionRepository.getQuestionsAmount(),
   };
   return questions;
 }
 
 async function getSpecificQuestion(id: number) {
-  const question = await getQuestion(id);
+  const question = await questionRepository.getQuestion(id);
   if (!question) throwError("Question not found", 404);
 
   return question;
 }
 
 async function getQuestionsBySearch(description: string) {
-  const questions = await getIlikeQuestions(description);
+  const questions = await questionRepository.getIlikeQuestions(description);
 
   return questions;
 }
 
 async function viewQuestion(id: number) {
-  const isQuestionExist = await getQuestion(id)
+  const isQuestionExist = await questionRepository.getQuestion(id)
   if (!isQuestionExist) throwError("Question not found", 404);
 
-  const question = await insertViewQuestion(id);
+  const question = await questionRepository.insertViewQuestion(id);
 
   return question;
 }
 
 async function voteQuestion(voteData: VoteData) {
-  const question = await getQuestion(voteData.questionId);
+  const question = await questionRepository.getQuestion(voteData.questionId);
   if (!question) throwError("Question not found", 404);
 
-  const alreadyVoted = await checkVotedQuestion(voteData);
+  const alreadyVoted = await questionRepository.checkVotedQuestion(voteData);
 
   if (alreadyVoted) {
-    return await deleteVoteQuestion(voteData);
+    return await questionRepository.deleteVoteQuestion(voteData);
   } else {
-    return await insertVoteQuestion(voteData)
+    return await questionRepository.insertVoteQuestion(voteData)
   }
 }
 

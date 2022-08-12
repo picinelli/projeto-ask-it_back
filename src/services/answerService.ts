@@ -1,6 +1,6 @@
 import { AnswerData } from "../controllers/answerController.js"
 import { getAnswers, insertAnswer } from "../repositories/answerRepository.js"
-import { getQuestion } from "../repositories/questionRepository.js";
+import { questionRepository } from "../repositories/questionRepository.js";
 import throwError from "../utils/throwError.js";
 
 async function createAnswer(answerData: AnswerData) {
@@ -8,7 +8,7 @@ async function createAnswer(answerData: AnswerData) {
 }
 
 async function getQuestionAnswers(id: number) {
-  const question = await getQuestion(id);
+  const question = await questionRepository.getQuestion(id);
   if (!question) throwError("Question not found", 404);
 
   return await getAnswers(id)

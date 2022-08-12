@@ -26,6 +26,6 @@ describe("UNIT test - getUserInfo", () => {
 
     const request = await userService.getUserInfo(1);
 
-    expect(request).toStrictEqual(userFactory.crecateUserData());
+    expect(request).toStrictEqual(userFactory.createUserData());
   });
 });
