@@ -1,7 +1,7 @@
 import { AnswerData } from "../controllers/answerController.js";
 import prisma from "../database.js";
 
-export async function insertAnswer(answerData: AnswerData) {
+async function insertAnswer(answerData: AnswerData) {
   return await prisma.answer.create({
     data: {
       description: answerData.description,
@@ -11,7 +11,7 @@ export async function insertAnswer(answerData: AnswerData) {
   });
 }
 
-export async function getAnswers(id: number) {
+async function getAnswers(id: number) {
   return await prisma.answer.findMany({
     where: {
       questionId: id,
@@ -19,7 +19,7 @@ export async function getAnswers(id: number) {
   });
 }
 
-export async function getQuestionAnswersAmount(id: number) {
+async function getQuestionAnswersAmount(id: number) {
   return await prisma.answer.aggregate({
     _count: true,
     where: {
