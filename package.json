@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
-    "start": "node ./dist/src/server.js",
+    "start": "npm run prisma:deploy && node ./dist/src/server.js",
+    "prisma:deploy": "prisma migrate deploy",
     "test": "dotenv -e .env.test prisma migrate dev && NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest -i",
     "test:unit": "NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest -- --coverage -i ./tests/unit",
     "dev": "nodemon ./src/server.ts"

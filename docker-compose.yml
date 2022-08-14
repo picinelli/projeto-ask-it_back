@@ -1,0 +1,25 @@
+version: "3"
+services:
+  postgres_askit_db:
+    image: postgres
+    container_name: postgres_askit_db
+    restart: always
+    ports:
+      - 4457:5432
+    env_file:
+      - .env
+    volumes: 
+      - pg_askit-db:/var/lib/postgresql/data
+
+  node_askit_app:
+    container_name: node_askit_app
+    build: .
+    ports:
+      - 5000:5000
+    depends_on:
+      - postgres_askit_db
+    env_file:
+      - .env
+
+volumes:
+  pg_askit-db:
