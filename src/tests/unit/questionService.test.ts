@@ -3,6 +3,7 @@ import { getQuestionsPage } from "../../controllers/questionController";
 import { questionRepository } from "../../repositories/questionRepository";
 import questionService from "../../services/questionService";
 import { questionFactory } from "../factories/questionFactory";
+import userFactory from "../factories/userFactory";
 import { __CreateQuestionAndReturnInfo } from "../integration/app.test";
 
 beforeEach(() => {
@@ -105,7 +106,10 @@ describe("UNIT test - voteQuestion", () => {
   it("given invalid questionId should throw error", async () => {
     jest.spyOn(questionRepository, "getQuestion").mockResolvedValue(null);
 
-    const request = questionService.voteQuestion({ username: "test", questionId: 1 });
+    const request = questionService.voteQuestion({
+      username: "test",
+      questionId: 1,
+    });
 
     expect(request).rejects.toEqual({
       type: 404,
@@ -147,5 +151,51 @@ describe("UNIT test - voteQuestion", () => {
     await questionService.voteQuestion({ username: "test", questionId: 1 });
 
     expect(questionRepository.insertVoteQuestion).toBeCalled();
+  });
+});
+
+describe("UNIT test - deleteSpecificQuestion", () => {
+  it("given invalid questionId should throw error", async () => {
+    jest.spyOn(questionRepository, "getQuestion").mockResolvedValue(null);
+    const user = userFactory.createUser();
+
+    const request = questionService.deleteSpecificQuestion(1, user);
+
+    expect(request).rejects.toEqual({
+      type: 404,
+      message: "Question not found",
+    });
+  });
+
+  it("given wrong user author, should throw error", async () => {
+    jest
+      .spyOn(questionRepository, "getQuestion")
+      .mockResolvedValue(questionFactory.createSpecificQuestion());
+    const user = userFactory.createUser();
+
+    const request = questionService.deleteSpecificQuestion(1, user);
+
+    expect(request).rejects.toEqual({
+      type: 401,
+      message: "This is not your question",
+    });
+  });
+
+  it("given correct info, should delete question", async () => {
+    const questionInfo = questionFactory.createSpecificQuestion()
+    questionInfo.user.username = "teste"
+    jest
+      .spyOn(questionRepository, "getQuestion")
+      .mockResolvedValue(questionInfo);
+    
+    jest
+      .spyOn(questionRepository, "deleteQuestion")
+      .mockResolvedValue(null);
+
+    const user = userFactory.createUser();
+
+    await questionService.deleteSpecificQuestion(1, user);
+
+    expect(questionRepository.deleteQuestion).toBeCalled()
   });
 });
